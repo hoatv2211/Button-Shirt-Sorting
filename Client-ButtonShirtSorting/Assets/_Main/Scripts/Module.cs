@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Handle events/converts/static variables in the project
@@ -8,9 +9,30 @@ public static class Module
 {
     public static float sound_fx = 1;
     public static float music_fx = 1;
+    public static int crLevel = 1;
+    public static int crLevelEndLess = 1;
+    public static EGameMode GameMode = EGameMode.Endless;
 
     #region Event Delegate
+    public static event LoadGame Event_LoadGame; 
 
+    public static void Action_Event_LoadGame(EGameMode _mode)
+    {
+        GameMode = _mode;
+        if (Event_LoadGame != null)
+        {
+            Event_LoadGame.Invoke(_mode);
+        }
+    }
+
+    public static event GameState Event_GameState;
+    public static void Action_Event_GameState(EGameState _state)
+    {
+        if (Event_GameState != null)
+        {
+            Event_GameState.Invoke(_state);
+        }
+    }
 
     #endregion
 
@@ -36,12 +58,6 @@ public static class Module
     #endregion
 
     #region Convert
-
-    public static string TimestampNow()
-    {
-        return DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
-    }
-
     // number to text
     public static string NumberCustomToString(float _number)
     {
@@ -83,25 +99,32 @@ public static class Module
         return str;
     }
 
-    public static string SecondCustomToTime2(int _second)
-    {
-        string str = "00:00";
-        int second = 0;
-        int minute = 0;
-        int hour = 0;
-        second = _second % 60;
-        if (second > 59) second = 59;
-        minute = (int)(Mathf.Floor(_second / 60) % 60);
-        hour = (int)(_second / 3600);
-
-
-        str = hour.ToString("00") + "h:" + minute.ToString("00") + "m" /*+ second.ToString("00")*/;
-        return str;
-    }
 
     #endregion
 
-
+    public static void LoadScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
+    }
 }
 
-public delegate void Refresh();
+
+
+public delegate void LoadGame(EGameMode _mode);
+public delegate void GameState(EGameState _state);
+
+
+public enum EGameMode
+{
+    Level,
+    Endless
+}
+
+public enum EGameState
+{
+    Home,
+    Playing,
+    GameOver,
+    Restart,
+    Next
+}
