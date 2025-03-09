@@ -27,6 +27,8 @@ public class UIMainGame : Singleton<UIMainGame>
         btnHint.SetUpEvent(Action_btnHint);
         btnHome.SetUpEvent(Action_btnHome);
 
+        //HUD
+        txtLevel.text = "Level "+ GameplayCtrl.Instance.level;
 
     }
 
@@ -40,6 +42,7 @@ public class UIMainGame : Singleton<UIMainGame>
     private void Action_btnHint()
     {
         //Hint
+        GameplayCtrl.Instance.ShowHint();
     }
 
     private void Action_btnHome() 

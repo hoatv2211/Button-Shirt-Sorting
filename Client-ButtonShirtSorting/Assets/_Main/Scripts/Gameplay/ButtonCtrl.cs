@@ -1,14 +1,15 @@
-using DG.Tweening.Core.Easing;
-using System.Collections;
+
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class ButtonCtrl : MonoBehaviour
 {
-    [SerializeField] private GameObject objPlaced;
-    private Color buttonColor;
+    public string id;
+    public GameObject objPlaced;
     private Vector3 originalPosition;
     private bool isPlaced = false;
+    public bool IsPlaced => isPlaced;
 
     private void Start()
     {
@@ -17,7 +18,7 @@ public class ButtonCtrl : MonoBehaviour
 
     public void SetColor(Color color)
     {
-        buttonColor = color;
+        id = color.ToString();
         GetComponent<SpriteRenderer>().color = color;
         objPlaced.SetActive(false);
     }
@@ -41,19 +42,30 @@ public class ButtonCtrl : MonoBehaviour
         if (hitCollider != null)
         {
             ShirtSlot slot = hitCollider.GetComponent<ShirtSlot>();
-            if (slot != null && slot.IsMatchingColor(buttonColor))
+            if (slot != null && slot.IsMatchingColor(id))
             {
                 transform.position = slot.transform.position;
                 isPlaced = true;
                 objPlaced.SetActive(true);
 
-                GameplayCtrl.Instance.RemainChecking(1);
+                GameplayCtrl.Instance.RemainChecking(slot, this);
+               
                 return;
             }
         }
         transform.position = originalPosition;
     }
 
- 
+    Tween twEffect = null;
+    public void ShowHintEffect()
+    {
+        //show fx
+        twEffect = GetComponent<SpriteRenderer>().DOFade(0.5f, 1).SetLoops(-1, LoopType.Yoyo);
+    }
 
+    public void HideHintEffect()
+    {
+        if(twEffect!=null)
+            twEffect.Kill();
+    }
 }

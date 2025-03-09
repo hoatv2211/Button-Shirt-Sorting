@@ -32,7 +32,7 @@ public class GameplayCtrl : Singleton<GameplayCtrl>
         state = EGameState.Playing;
         switch (Module.GameMode)
         {
-            case EGameMode.Level:             
+            case EGameMode.Level:
                 LoadGameLevel();
 
                 if (ctTimeRemain != null)
@@ -52,7 +52,6 @@ public class GameplayCtrl : Singleton<GameplayCtrl>
                 break;
         }
     }
-
 
     #endregion
 
@@ -82,16 +81,6 @@ public class GameplayCtrl : Singleton<GameplayCtrl>
 
     public void LoadGameEndless()
     {
-        //Clear all
-        spawns_ButtonPos.Clear();
-        spawns_SlotPos.Clear();
-
-        foreach (var k in buttonCtrls)
-            SimplePool.Despawn(k.gameObject);
-
-        foreach (var k in shirtSlots)
-            SimplePool.Despawn(k.gameObject);
-
         //Spawn
         buttonRemain = Random.Range(5, 8) + level / 5;
         UIMainGame.Instance.ShowButtonRemain(buttonRemain);
@@ -192,7 +181,6 @@ public class GameplayCtrl : Singleton<GameplayCtrl>
 
     #endregion
 
-
     #region Actions
     Coroutine ctTimeRemain;
     IEnumerator IeTimerCountdown()
@@ -211,11 +199,16 @@ public class GameplayCtrl : Singleton<GameplayCtrl>
         }
     }
 
-    public void RemainChecking(int _sub)
+    public void RemainChecking(ShirtSlot _slot, ButtonCtrl _btn)
     {
-        buttonRemain -= _sub;
+        _slot.HideHintEffect();
+        _btn.HideHintEffect();
+        shirtSlots.Remove(_slot);
+        buttonCtrls.Remove(_btn);
+
+        buttonRemain -= 1;
         UIMainGame.Instance.ShowButtonRemain(buttonRemain);
-        if(buttonRemain <= 0)
+        if (buttonRemain <= 0)
         {
             //Show Win
             if (ctTimeRemain != null)
@@ -224,6 +217,23 @@ public class GameplayCtrl : Singleton<GameplayCtrl>
             state = EGameState.GameOver;
             UIMainGame.Instance.ShowUIGameOver(true);
         }
+    }
+
+    #endregion
+
+    #region Hint
+    public void ShowHint()
+    {
+        ButtonCtrl btn = buttonCtrls.First(x => x.IsPlaced == false);
+        btn.ShowHintEffect();
+
+        ShirtSlot slot = shirtSlots.First(x=>x.id == btn.id);
+        slot.ShowHintEffect();
+    }
+
+    public void AutoSort()
+    {
+
     }
 
     #endregion
