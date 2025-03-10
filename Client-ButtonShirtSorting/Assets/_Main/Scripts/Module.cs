@@ -13,6 +13,15 @@ public static class Module
     public static int crLevelEndLess = 1;
     public static EGameMode GameMode = EGameMode.Endless;
 
+    #region Save Local
+    public static int lvCr_save
+    {
+        get { return PlayerPrefs.GetInt("save_level", 1); }
+        set { PlayerPrefs.SetInt("save_level", value); }
+    }
+
+    #endregion
+
     #region Event Delegate
 
 

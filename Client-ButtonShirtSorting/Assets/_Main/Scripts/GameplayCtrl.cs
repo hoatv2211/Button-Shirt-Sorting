@@ -1,21 +1,22 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
 
 public class GameplayCtrl : Singleton<GameplayCtrl>
 {
     [Header("Info level")]
     public int level = 1;
-    public LevelModel levelModel;
+    public LevelModel lvModel;
     public GameObject trGamelevel;
     public int timeRemaining = 100;
     public int buttonRemain = 10;
 
     [Header("Prefabs Ref")]
-    [SerializeField] private ShirtSlot prefab_ShirtSlot;
+    [SerializeField] private ShirtSlot  prefab_ShirtSlot;
     [SerializeField] private ButtonCtrl prefab_Button;
+    [SerializeField] private GameObject vfx_hint;
 
     [Header("ReadOnly - Endless")]
     [SerializeField] private SpriteRenderer spawnArea_Button;
@@ -33,6 +34,7 @@ public class GameplayCtrl : Singleton<GameplayCtrl>
         switch (Module.GameMode)
         {
             case EGameMode.Level:
+                level = Module.crLevel;
                 LoadGameLevel();
 
                 if (ctTimeRemain != null)
@@ -51,6 +53,8 @@ public class GameplayCtrl : Singleton<GameplayCtrl>
             default:
                 break;
         }
+
+        AutoShowHint();
     }
 
     #endregion
@@ -58,9 +62,77 @@ public class GameplayCtrl : Singleton<GameplayCtrl>
     #region Game - by Level
     public void LoadGameLevel()
     {
+        lvModel = Resources.Load<LevelModel>(string.Format("Levels/Lv{0}",Module.crLevel));
 
+        //Spawns
+        buttonRemain = lvModel.buttonCount;
+        UIMainGame.Instance.ShowButtonRemain(buttonRemain);
+        List<Color> selectedColors = colors.OrderBy(x => Random.value).Take(buttonRemain).ToList();
+
+
+        if (!lvModel.isRandom)
+        {
+            for (int i = 0; i < lvModel.buttonCount; i++)
+            {
+                Color color = selectedColors[i];
+
+                ShirtSlot slot = SimplePool.Spawn(prefab_ShirtSlot, lvModel.slotsPos[i], Quaternion.identity);
+                slot.SetColor(color);
+                slot.transform.SetParent(spawnArea_Slot.transform);
+                shirtSlots.Add(slot);
+
+                ButtonCtrl button = SimplePool.Spawn(prefab_Button, lvModel.buttonsPos[i], Quaternion.identity);
+                button.SetColor(color);
+                button.transform.SetParent(spawnArea_Button.transform);
+                buttonCtrls.Add(button);
+            }
+        }
+        else
+        {
+            AutoGenLevel();
+        }
+       
     }
 
+    public void AutoGenLevel()
+    {
+        //Spawns
+        buttonRemain = lvModel.buttonCount;
+        for (int i = 0; i < buttonRemain; i++)
+        {
+            Color color = lvModel.GetRandomColor();
+            //Buttons Spawn
+            Vector3 randomPos_Btn;
+            int attempt = 0;
+            do
+            {
+                randomPos_Btn = GetRandomPositionInSprite(ETypeObject.Button);
+                attempt++;
+            } while (IsOverlapping(randomPos_Btn, ETypeObject.Button) && attempt < 50);
+
+            spawns_ButtonPos.Add(randomPos_Btn);
+            ButtonCtrl button = SimplePool.Spawn(prefab_Button, randomPos_Btn, Quaternion.identity);
+            button.SetColor(color);
+            button.transform.parent = spawnArea_Button.transform;
+            buttonCtrls.Add(button);
+
+
+            //Slots Spawn
+            Vector3 randomPos_Slot;
+            int attempts = 0;
+            do
+            {
+                randomPos_Slot = GetRandomPositionInSprite(ETypeObject.Slot);
+                attempts++;
+            } while (IsOverlapping(randomPos_Slot, ETypeObject.Slot) && attempts < 50);
+
+            spawns_SlotPos.Add(randomPos_Slot);
+            ShirtSlot slot = SimplePool.Spawn(prefab_ShirtSlot, randomPos_Slot, Quaternion.identity);
+            slot.SetColor(color);
+            slot.transform.parent = spawnArea_Slot.transform;
+            shirtSlots.Add(slot);
+        }
+    }
     #endregion
 
     #region Game - by EndLess
@@ -217,24 +289,52 @@ public class GameplayCtrl : Singleton<GameplayCtrl>
             state = EGameState.GameOver;
             UIMainGame.Instance.ShowUIGameOver(true);
         }
+
+        AutoShowHint();
     }
 
     #endregion
 
     #region Hint
+    Tween twCountdown;
+    public void AutoShowHint()
+    {
+        if(twCountdown != null)
+            twCountdown.Kill();
+
+        twCountdown = DOVirtual.DelayedCall(15f,ShowHint);
+    }
+
     public void ShowHint()
     {
+        if (state != EGameState.GameOver)
+            return;
+
         ButtonCtrl btn = buttonCtrls.First(x => x.IsPlaced == false);
         btn.ShowHintEffect();
 
-        ShirtSlot slot = shirtSlots.First(x=>x.id == btn.id);
+        ShirtSlot slot = shirtSlots.First(x => x.id == btn.id);
         slot.ShowHintEffect();
+    }
+
+    public GameObject EffectHint(Vector3 _pos)
+    {
+        GameObject g = SimplePool.Spawn(vfx_hint, _pos, Quaternion.identity);
+
+        return g;
     }
 
     public void AutoSort()
     {
+        ButtonCtrl btn = buttonCtrls.First(x => x.IsPlaced == false);
+        ShirtSlot slot = shirtSlots.First(x => x.id == btn.id);
 
+        btn.transform.DOMove(slot.transform.position, 1f).OnComplete(() => {
+            btn.SetAuto(slot);
+        });
     }
+
+
 
     #endregion
 

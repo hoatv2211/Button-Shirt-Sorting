@@ -8,6 +8,8 @@ public class ButtonCtrl : MonoBehaviour
     public string id;
     public GameObject objPlaced;
     private Vector3 originalPosition;
+    private GameObject vfxHint;
+
     private bool isPlaced = false;
     public bool IsPlaced => isPlaced;
 
@@ -25,16 +27,22 @@ public class ButtonCtrl : MonoBehaviour
 
     private void OnMouseDrag()
     {
+        if (GameplayCtrl.Instance == null) //Tool scenes disable
+            return;
+
         if (!isPlaced)
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mousePosition.z = 0;
-            transform.position = Vector3.Lerp(transform.position,mousePosition + Vector3.up,0.2f);
+            transform.position = Vector3.Lerp(transform.position,mousePosition + Vector3.up,1);
         }
     }
 
     private void OnMouseUp()
     {
+        if (GameplayCtrl.Instance == null) //Tool scenes disable
+            return;
+
         if (isPlaced) return;
 
         LayerMask slotLayer = LayerMask.GetMask("Slot");
@@ -56,16 +64,31 @@ public class ButtonCtrl : MonoBehaviour
         transform.position = originalPosition;
     }
 
+    public void SetAuto(ShirtSlot slot)
+    {
+        transform.position = slot.transform.position;
+        isPlaced = true;
+        objPlaced.SetActive(true);
+
+        GameplayCtrl.Instance.RemainChecking(slot, this);
+    }
+
+
     Tween twEffect = null;
     public void ShowHintEffect()
     {
         //show fx
-        twEffect = GetComponent<SpriteRenderer>().DOFade(0.5f, 1).SetLoops(-1, LoopType.Yoyo);
+        //twEffect = GetComponent<SpriteRenderer>().DOFade(0.5f, 1).SetLoops(-1, LoopType.Yoyo);
+        vfxHint = GameplayCtrl.Instance.EffectHint(transform.position);
+        vfxHint.transform.SetParent(transform);
     }
 
     public void HideHintEffect()
     {
-        if(twEffect!=null)
-            twEffect.Kill();
+        //if(twEffect!=null)
+        //    twEffect.Kill();
+
+        if (vfxHint != null)
+            SimplePool.Despawn(vfxHint);
     }
 }

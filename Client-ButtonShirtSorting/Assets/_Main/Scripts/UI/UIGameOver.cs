@@ -29,7 +29,7 @@ public class UIGameOver : MonoBehaviour
         switch (Module.GameMode)
         {
             case EGameMode.Level:
-               
+                Module.lvCr_save++;
                 break;
             case EGameMode.Endless:
                 Module.crLevelEndLess++;

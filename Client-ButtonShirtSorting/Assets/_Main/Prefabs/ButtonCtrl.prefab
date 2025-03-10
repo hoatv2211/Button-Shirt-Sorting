@@ -72,7 +72,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: 67d74fe0bc2ff4f04bb9d4f9e1d63c02, type: 3}
   m_Color: {r: 0, g: 1, b: 0.008930683, a: 1}
   m_FlipX: 0
@@ -96,6 +96,7 @@ GameObject:
   - component: {fileID: 869385864854636018}
   - component: {fileID: 5157917199620072684}
   - component: {fileID: 4766182083013362752}
+  - component: {fileID: 3507637612193890539}
   m_Layer: 0
   m_Name: ButtonCtrl
   m_TagString: Untagged
@@ -183,6 +184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf113099301371d4e8db2defd9c34c32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 
   objPlaced: {fileID: 4636522006269036039}
 --- !u!58 &4766182083013362752
 CircleCollider2D:
@@ -219,3 +221,15 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!114 &3507637612193890539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7452317995836867076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d3bcf178b7bcba41a2e3bf6af77b8d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

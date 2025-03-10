@@ -6,7 +6,7 @@ using DG.Tweening;
 public class ShirtSlot : MonoBehaviour
 {
     public string id;
-
+    private GameObject vfxHint;
     public void SetColor(Color color)
     {
         id = color.ToString();
@@ -20,12 +20,14 @@ public class ShirtSlot : MonoBehaviour
     }
 
     public void ShowHintEffect()
-    {
-        GetComponent<SpriteRenderer>().DOFade(0.5f, 1).SetLoops(-1, LoopType.Yoyo);
+    { 
+        vfxHint = GameplayCtrl.Instance.EffectHint(transform.position);
     }
 
     public void HideHintEffect()
     {
 
+        if (vfxHint != null)
+            SimplePool.Despawn(vfxHint);
     }
 }

@@ -42,7 +42,7 @@ public class UIMainGame : Singleton<UIMainGame>
     private void Action_btnHint()
     {
         //Hint
-        GameplayCtrl.Instance.ShowHint();
+        GameplayCtrl.Instance.AutoSort();
     }
 
     private void Action_btnHome() 
