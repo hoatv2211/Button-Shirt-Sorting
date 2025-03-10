@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System.Linq;
 
 public class ButtonCtrl : MonoBehaviour
 {
@@ -46,21 +47,30 @@ public class ButtonCtrl : MonoBehaviour
         if (isPlaced) return;
 
         LayerMask slotLayer = LayerMask.GetMask("Slot");
-        Collider2D hitCollider = Physics2D.OverlapCircle(transform.position, 0.25f, slotLayer);
-        if (hitCollider != null)
+        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, 0.25f, slotLayer);
+        List<ShirtSlot> matchingSlots = new List<ShirtSlot>();
+        foreach (Collider2D hitCollider in hitColliders)
         {
             ShirtSlot slot = hitCollider.GetComponent<ShirtSlot>();
             if (slot != null && slot.IsMatchingColor(id))
             {
-                transform.position = slot.transform.position;
-                isPlaced = true;
-                objPlaced.SetActive(true);
-
-                GameplayCtrl.Instance.RemainChecking(slot, this);
-               
-                return;
+                matchingSlots.Add(slot);
             }
         }
+
+        if (matchingSlots.Count > 0)
+        {
+            // pick Slot 
+            ShirtSlot bestSlot = matchingSlots.OrderBy(slot => Vector2.Distance(transform.position, slot.transform.position)).First();
+
+            transform.position = bestSlot.transform.position;
+            isPlaced = true;
+            objPlaced.SetActive(true);
+
+            GameplayCtrl.Instance.RemainChecking(bestSlot, this);
+            return;
+        }
+ 
         transform.position = originalPosition;
     }
 

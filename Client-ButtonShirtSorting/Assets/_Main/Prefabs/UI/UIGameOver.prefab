@@ -662,6 +662,8 @@ MonoBehaviour:
   btnHome: {fileID: 4576313671484300077}
   btnRestart: {fileID: 6235462070078227886}
   btnNext: {fileID: 4022684985259965072}
+  clipWin: {fileID: 8300000, guid: 681e119ebc17ecc45b176b8d10d73cf0, type: 3}
+  clipLose: {fileID: 8300000, guid: 9a2b6c1a84916d34c9cda822ba6e7e0c, type: 3}
 --- !u!1 &4319070940337728759
 GameObject:
   m_ObjectHideFlags: 0

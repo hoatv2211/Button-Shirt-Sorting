@@ -291,9 +291,9 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
+  m_VertexColorAlwaysGammaSpace: 1
   m_AdditionalShaderChannelsFlag: 25
-  m_UpdateRectTransformForStandalone: 0
+  m_UpdateRectTransformForStandalone: 1
   m_SortingLayerID: 0
   m_SortingOrder: 5
   m_TargetDisplay: 0
@@ -560,6 +560,7 @@ MonoBehaviour:
   prefab_ShirtSlot: {fileID: 2862955022854684584, guid: f30727b1de046f449a45795aedb0539d, type: 3}
   prefab_Button: {fileID: 5157917199620072684, guid: 7e8a738a72b291c4b91eda2f17dadb44, type: 3}
   vfx_hint: {fileID: 5348966399715519259, guid: 45869734d9144ed4a87363df7ccfff3b, type: 3}
+  clipCollect: {fileID: 8300000, guid: dfee211ec93df5741925514c5f7ec836, type: 3}
   spawnArea_Button: {fileID: 1063249812}
   spawnArea_Slot: {fileID: 605766651}
   buttonCtrls: []

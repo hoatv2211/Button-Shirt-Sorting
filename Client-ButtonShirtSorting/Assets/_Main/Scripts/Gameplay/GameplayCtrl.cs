@@ -17,6 +17,7 @@ public class GameplayCtrl : Singleton<GameplayCtrl>
     [SerializeField] private ShirtSlot  prefab_ShirtSlot;
     [SerializeField] private ButtonCtrl prefab_Button;
     [SerializeField] private GameObject vfx_hint;
+    [SerializeField] private AudioClip clipCollect;
 
     [Header("ReadOnly - Endless")]
     [SerializeField] private SpriteRenderer spawnArea_Button;
@@ -30,6 +31,7 @@ public class GameplayCtrl : Singleton<GameplayCtrl>
     #region Events
     private void OnEnable()
     {
+
         state = EGameState.Playing;
         switch (Module.GameMode)
         {
@@ -273,6 +275,7 @@ public class GameplayCtrl : Singleton<GameplayCtrl>
 
     public void RemainChecking(ShirtSlot _slot, ButtonCtrl _btn)
     {
+        SoundManager.Instance.PlayOnCamera(clipCollect);
         _slot.HideHintEffect();
         _btn.HideHintEffect();
         shirtSlots.Remove(_slot);

@@ -29,7 +29,7 @@ public class UIMainGame : Singleton<UIMainGame>
 
         //HUD
         txtLevel.text = "Level "+ GameplayCtrl.Instance.level;
-
+        Application.targetFrameRate = 60;
     }
 
 
@@ -41,8 +41,12 @@ public class UIMainGame : Singleton<UIMainGame>
 
     private void Action_btnHint()
     {
-        //Hint
-        GameplayCtrl.Instance.AutoSort();
+        //Ads
+        AdsManager.Instance.ShowAd_Reward(() => {
+
+            GameplayCtrl.Instance.AutoSort();
+        });
+        
     }
 
     private void Action_btnHome() 

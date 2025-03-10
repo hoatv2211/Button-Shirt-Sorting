@@ -13,6 +13,7 @@ public class DontDestroyThisGameobject : MonoBehaviour
     }
     void Start()
     {
-        Application.targetFrameRate = 120;
+        Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 0;
     }
 }

@@ -12,6 +12,9 @@ public class UIGameOver : MonoBehaviour
     [SerializeField] private UIButton btnRestart;
     [SerializeField] private UIButton btnNext;
 
+    [SerializeField] private AudioClip clipWin;
+    [SerializeField] private AudioClip clipLose;
+
     private void OnEnable()
     {
         btnHome.SetUpEvent(Action_btnHome);
@@ -21,6 +24,7 @@ public class UIGameOver : MonoBehaviour
 
     public void ShowWin()
     {
+        SoundManager.Instance.PlayOnCamera(clipWin);
         btnNext.gameObject.SetActive(true);
         txtTitle.text = "Victory";
         txtDesc.text = "Level " + GameplayCtrl.Instance.level + " Completed!";
@@ -41,6 +45,7 @@ public class UIGameOver : MonoBehaviour
 
     public void ShowLose()
     {
+        SoundManager.Instance.PlayOnCamera(clipLose);
         btnNext.gameObject.SetActive(false);
         txtTitle.text = "Lose";
         txtDesc.text = "Game Over! \n Time's up!";
@@ -59,6 +64,12 @@ public class UIGameOver : MonoBehaviour
 
     private void Action_btnNext()
     {
+        switch (Module.GameMode)
+        {
+            case EGameMode.Level:
+                Module.crLevel = Module.lvCr_save;
+                break;
+        }
         Module.LoadScene("MainGame");
 
     }
