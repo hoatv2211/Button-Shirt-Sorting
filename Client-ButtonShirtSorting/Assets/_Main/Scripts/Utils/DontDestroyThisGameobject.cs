@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DontDestroyThisGameobject : MonoBehaviour
+public class DontDestroyThisGameobject : Singleton<DontDestroyThisGameobject>
 {
-    void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         if (transform.childCount > 0)
             DontDestroyOnLoad(this.gameObject);
         else

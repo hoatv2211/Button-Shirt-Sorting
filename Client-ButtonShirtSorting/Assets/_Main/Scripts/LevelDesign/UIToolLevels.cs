@@ -90,6 +90,8 @@ public class UIToolLevels : MonoBehaviour
         {
             options.Add(new TMP_Dropdown.OptionData(k.name));
         }
+
+        options.Sort();
         ddLevel.AddOptions(options);
 
     }

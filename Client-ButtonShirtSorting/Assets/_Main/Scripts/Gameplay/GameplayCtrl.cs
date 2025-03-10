@@ -303,14 +303,15 @@ public class GameplayCtrl : Singleton<GameplayCtrl>
     public void AutoShowHint()
     {
         if(twCountdown != null)
-            twCountdown.Kill();
+            twCountdown.Restart();
+        else
+            twCountdown = DOVirtual.DelayedCall(10f, ShowHint);
 
-        twCountdown = DOVirtual.DelayedCall(15f,ShowHint);
     }
 
     public void ShowHint()
     {
-        if (state != EGameState.GameOver)
+        if (state != EGameState.Playing)
             return;
 
         ButtonCtrl btn = buttonCtrls.First(x => x.IsPlaced == false);
